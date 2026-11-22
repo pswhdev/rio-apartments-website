@@ -18,25 +18,26 @@ document.querySelectorAll("img[data-image-fallback]").forEach((img)=>{
 });
 
 
-/* Accessible full-size apartment photo gallery. */
-const galleryImages=[...document.querySelectorAll(".apartment-gallery img")];
+/* Accessible full-size apartment photo galleries for both properties. */
 const lightbox=document.querySelector("#photo-lightbox");
 const fullImage=document.querySelector("#lightbox-image");
 const lightboxCaption=document.querySelector("#lightbox-caption");
 const lightboxCounter=document.querySelector("#lightbox-counter");
+let activeGallery=[];
 let activePhoto=0;
 let priorFocus=null;
 function showPhoto(index){
-  if(!galleryImages.length)return;
-  activePhoto=(index+galleryImages.length)%galleryImages.length;
-  const source=galleryImages[activePhoto];
+  if(!activeGallery.length)return;
+  activePhoto=(index+activeGallery.length)%activeGallery.length;
+  const source=activeGallery[activePhoto];
   fullImage.src=source.currentSrc||source.src;
   fullImage.alt=source.alt;
   lightboxCaption.textContent=source.closest("figure").querySelector("figcaption")?.textContent||source.alt;
-  lightboxCounter.textContent=`${activePhoto+1} / ${galleryImages.length}`;
+  lightboxCounter.textContent=`${activePhoto+1} / ${activeGallery.length}`;
 }
-function openPhoto(index){
+function openPhoto(gallery,index){
   priorFocus=document.activeElement;
+  activeGallery=gallery;
   showPhoto(index);
   if(typeof lightbox.showModal==="function"){lightbox.showModal();}
   else{lightbox.setAttribute("open","");}
@@ -47,14 +48,17 @@ function closePhoto(){
   else lightbox.removeAttribute("open");
   if(priorFocus && typeof priorFocus.focus==="function")priorFocus.focus();
 }
-galleryImages.forEach((img,index)=>{
-  const fig=img.closest("figure");
-  fig.setAttribute("tabindex","0");
-  fig.setAttribute("role","button");
-  fig.setAttribute("aria-label",`Open photo ${index+1} of ${galleryImages.length}: ${img.alt}`);
-  fig.addEventListener("click",()=>openPhoto(index));
-  fig.addEventListener("keydown",event=>{
-    if(event.key==="Enter"||event.key===" "){event.preventDefault();openPhoto(index);}
+document.querySelectorAll(".apartment-gallery").forEach(gallery=>{
+  const images=[...gallery.querySelectorAll("img")];
+  images.forEach((img,index)=>{
+    const fig=img.closest("figure");
+    fig.setAttribute("tabindex","0");
+    fig.setAttribute("role","button");
+    fig.setAttribute("aria-label",`Open photo ${index+1} of ${images.length}: ${img.alt}`);
+    fig.addEventListener("click",()=>openPhoto(images,index));
+    fig.addEventListener("keydown",event=>{
+      if(event.key==="Enter"||event.key===" "){event.preventDefault();openPhoto(images,index);}
+    });
   });
 });
 lightbox.querySelector(".lightbox-close").addEventListener("click",closePhoto);
