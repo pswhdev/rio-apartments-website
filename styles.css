@@ -30,3 +30,6 @@
 .lightbox-close{position:absolute;top:2px;right:2px;width:44px;height:44px;font-size:30px;z-index:1}
 .lightbox-arrow:hover,.lightbox-close:hover{background:#ffffff4d}
 @media(max-width:700px){.photo-lightbox{padding:10px}.lightbox-inner{gap:4px}.lightbox-figure{max-width:calc(100vw - 92px)}.lightbox-arrow{width:40px;height:40px;flex-basis:40px;font-size:32px}.lightbox-figure img{max-height:calc(100vh - 140px)}.lightbox-figure figcaption{gap:12px;font-size:12px}}
+
+/* Alternate galleries slightly to distinguish the two properties. */
+.gallery-section-alt{background:var(--sand)}
