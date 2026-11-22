@@ -4,3 +4,15 @@ pt:{navStays:"Apartamentos",navRio:"Descubra o Rio",navAbout:"Sobre",bookNav:"En
 const languageButton=document.querySelector("#language");let current="en";
 function applyLanguage(lang){current=lang==="pt"?"pt":"en";document.documentElement.lang=current==="pt"?"pt-BR":"en";for(const node of document.querySelectorAll("[data-t]")){const value=strings[current][node.dataset.t];if(value)node.textContent=value;}for(const node of document.querySelectorAll("[data-html]")){const value=strings[current][node.dataset.html];if(value)node.innerHTML=value;}document.querySelector("#language-label").textContent=current==="pt"?"EN":"PT";languageButton.setAttribute("aria-label",current==="pt"?"Switch to English":"Mudar para português");document.title=current==="pt"?"Rio Stays — Apartamentos por temporada no Rio de Janeiro":"Rio Stays — Your place in Rio de Janeiro";try{localStorage.setItem("rioLanguage",current)}catch{}}
 languageButton.addEventListener("click",()=>applyLanguage(current==="en"?"pt":"en"));document.querySelector("#year").textContent=new Date().getFullYear();let lang="en";try{lang=localStorage.getItem("rioLanguage")||(navigator.language.toLowerCase().startsWith("pt")?"pt":"en")}catch{lang=navigator.language.toLowerCase().startsWith("pt")?"pt":"en"}applyLanguage(lang);
+
+/* Keep the preview functional while prepared photo assets are being uploaded. */
+document.querySelectorAll("img[data-image-fallback]").forEach((img)=>{
+  img.addEventListener("error",()=>{
+    const fallback=img.dataset.imageFallback;
+    if(fallback && img.src!==fallback){
+      img.removeAttribute("data-image-fallback");
+      img.src=fallback;
+      img.alt="Temporary illustrative image; actual property photo is awaiting upload";
+    }
+  });
+});
